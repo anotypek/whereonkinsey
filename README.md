@@ -46,13 +46,15 @@ Open `index.html` in a browser to preview it. No installation or build step is r
 
 The item structure is informed by the distinction between attraction, fantasy, behavior, emotional preference, identity, and change over time found in Kinsey-, Klein-, and Sell-style approaches. Sexual and romantic attraction are measured separately, and attraction toward women, men, and non-binary people is not treated as a single bipolar variable. These original questions have not been psychometrically validated and the result must remain a preliminary self-reflection aid, not a diagnosis.
 
-### Analysis algorithm (`wok-profile-1.0`)
+### Analysis algorithm (`wok-profile-1.1`)
 
 - Responses are normalized from the 0–4 answer scale to 0–1.
+- Each session uses a fixed, evenly distributed form drawn from the bank; only the presentation order is randomized. This prevents the score from changing solely because a different random subset of items was selected.
 - Sexual target axes weight direct attraction at `1.0`, desire at `0.8`, and fantasy at `0.65`.
 - Romantic target axes weight direct romantic attraction at `1.0` and emotional bonding at `0.8`.
 - Behavior and experience are recorded but intentionally excluded from the core attraction score; opportunity, pressure, and circumstance can make behavior diverge from attraction.
 - Every women/men/non-binary target axis is a weighted mean with a heuristic uncertainty band based on weighted variance, effective sample size, and a small-sample penalty.
+- A score is displayed only when at least three applicable, answered items are available. Missing or insufficient data is shown as unavailable rather than as a zero score.
 - Result stability combines answer coverage (45%), adequate target-axis coverage (30%), and within-axis consistency (25%). It is not a clinical confidence measure.
 - A Kinsey-style 0–6 relative position is calculated separately for sexual and romantic attraction only for respondents identifying as a woman or man, and only when both same- and different-gender axes contain usable signal. Non-binary attraction remains a separate axis and is never folded into that number.
 - The complete calculated analysis, algorithm version, inputs, timestamps, and uncertainty values are stored locally with the assessment session.

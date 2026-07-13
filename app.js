@@ -143,6 +143,7 @@ const SESSION_QUOTAS = {
   self_understanding: 2,
   comfort_and_boundaries: 2,
 };
+const MIN_USABLE_ITEMS = 3;
 
 const RESULT_COPY = {
   en: ["Preliminary profile", "Your attraction profile", "This result describes patterns in your answers. It does not define your identity or provide a diagnosis.", "Answer coverage", "Result stability", "Sexual relative position", "Romantic relative position", "Sexual attraction", "Romantic attraction", "Weighted scores prioritize attraction over fantasy and behavior. The shaded range is a heuristic uncertainty band, not a clinical confidence interval.", "Start a new assessment", "Not applicable", "answered items"],
@@ -430,15 +431,11 @@ function startAssessment() {
   Object.entries(SESSION_QUOTAS).forEach(([dimension, quota]) => {
     const candidates = bank.filter((question) => question.dimension === dimension);
     const availableTargets = candidates.some((question) => question.target !== "none") ? targetOrder : ["none"];
-    const targetBuckets = availableTargets.map((target) => shuffle(candidates.filter((question) => question.target === target)));
-    let cursor = 0;
-    while (selected.filter((question) => question.dimension === dimension).length < quota) {
-      const bucket = targetBuckets[cursor % targetBuckets.length];
-      const candidate = bucket.shift();
-      if (candidate) selected.push(candidate);
-      cursor++;
-      if (cursor > candidates.length * 5) break;
-    }
+    const targetCounts = availableTargets.map((_, index) => Math.floor((quota + availableTargets.length - 1 - index) / availableTargets.length));
+    availableTargets.forEach((target, index) => {
+      const bucket = candidates.filter((question) => question.target === target);
+      selected.push(...selectStableItems(bucket, targetCounts[index]));
+    });
   });
 
   const questions = shuffle(selected);
@@ -455,6 +452,15 @@ function startAssessment() {
   };
   saveSession();
   showCurrentQuestion();
+}
+
+function selectStableItems(items, count) {
+  if (!count || !items.length) return [];
+  const ordered = [...items].sort((a, b) => a.id.localeCompare(b.id));
+  return Array.from({ length: Math.min(count, ordered.length) }, (_, index) => {
+    const position = Math.floor(((index + 0.5) * ordered.length) / count);
+    return ordered[Math.min(position, ordered.length - 1)];
+  });
 }
 
 function resumeAssessment() {
@@ -706,13 +712,16 @@ function analyzeSession(session) {
   const indices = Object.fromEntries(Object.entries(INDEX_CONFIG).map(([name, config]) => [name, calculateCodedIndex(answers, config)]));
   const allAxes = [...Object.values(sexual), ...Object.values(romantic)];
   const coverage = answers.length / 50;
-  const adequateAxes = allAxes.filter((axis) => axis.n >= 3).length / allAxes.length;
-  const meanUncertainty = allAxes.reduce((sum, axis) => sum + axis.margin, 0) / allAxes.length;
+  const usableAxes = allAxes.filter((axis) => axis.usable);
+  const adequateAxes = usableAxes.length / allAxes.length;
+  const meanUncertainty = usableAxes.length
+    ? usableAxes.reduce((sum, axis) => sum + axis.margin, 0) / usableAxes.length
+    : 0.35;
   const consistency = Math.max(0, 1 - meanUncertainty / 0.35);
   const stability = clamp(coverage * 0.45 + adequateAxes * 0.3 + consistency * 0.25, 0, 1);
 
   return {
-    algorithm: "wok-profile-1.0",
+    algorithm: "wok-profile-1.1",
     calculatedAt: new Date().toISOString(),
     profileGender: session.profileGender,
     answered: answers.length,
@@ -753,7 +762,7 @@ function calculateWeightedAxis(answers, target, weights) {
 }
 
 function summarizeRows(rows) {
-  if (!rows.length) return { score: 0, low: 0, high: 1, margin: 0.5, n: 0, effectiveN: 0 };
+  if (!rows.length) return { score: null, low: null, high: null, margin: 0.5, n: 0, effectiveN: 0, usable: false };
   const weightSum = rows.reduce((sum, row) => sum + row.weight, 0);
   const score = rows.reduce((sum, row) => sum + row.score * row.weight, 0) / weightSum;
   const variance = rows.reduce((sum, row) => sum + row.weight * ((row.score - score) ** 2), 0) / weightSum;
@@ -767,6 +776,7 @@ function summarizeRows(rows) {
     margin: round(margin, 4),
     n: rows.length,
     effectiveN: round(effectiveN, 3),
+    usable: rows.length >= MIN_USABLE_ITEMS,
   };
 }
 
@@ -778,7 +788,7 @@ function calculateRelativePosition(axes, gender) {
   if (!['woman', 'man'].includes(gender)) return null;
   const same = gender === 'woman' ? axes.women : axes.men;
   const different = gender === 'woman' ? axes.men : axes.women;
-  if (!same.n || !different.n || same.score + different.score < 0.16) return null;
+  if (!same.usable || !different.usable || same.score + different.score < 0.16) return null;
   return round(6 * same.score / (same.score + different.score), 2);
 }
 
@@ -810,15 +820,19 @@ function renderSecondaryMetrics(indices, language, itemLabel) {
   container.className = "secondary-grid";
   container.replaceChildren(...definitions.map(([key, label]) => {
     const metric = indices[key];
+    const axis = metric;
+    const hasResult = metric.usable;
     const row = document.createElement("div");
     row.className = "axis-row";
     row.innerHTML = `
-      <div class="axis-row-head"><span>${label}</span><strong>${Math.round(metric.score * 100)}%</strong></div>
+      <div class="axis-row-head"><span>${label}</span><strong>${hasResult ? `${Math.round(metric.score * 100)}%` : "—"}</strong></div>
       <div class="axis-track">
-        <span class="axis-range" style="left:${metric.low * 100}%;width:${Math.max(0, metric.high - metric.low) * 100}%"></span>
-        <span class="axis-value" style="width:${metric.score * 100}%"></span>
+        <span class="axis-range" style="left:${hasResult ? metric.low * 100 : 0}%;width:${hasResult ? Math.max(0, metric.high - metric.low) * 100 : 0}%"></span>
+        <span class="axis-value" style="width:${hasResult ? metric.score * 100 : 0}%"></span>
       </div>
       <small>${metric.n} ${itemLabel} · ${Math.round(metric.low * 100)}–${Math.round(metric.high * 100)}%</small>`;
+    if (!hasResult) row.querySelector("small").textContent = `${metric.n} ${itemLabel} · —`;
+    if (!hasResult) row.querySelector("small").textContent = `${axis.n} ${itemLabel} · —`;
     return row;
   }));
 }
@@ -827,13 +841,14 @@ function renderAxisBars(container, axes, language, itemLabel) {
   const labels = GENDER_LABELS[language] || GENDER_LABELS.en;
   const targetLabels = { women: labels[1], men: labels[2], nonbinary: labels[3] };
   container.replaceChildren(...Object.entries(axes).map(([target, axis]) => {
+    const hasResult = axis.usable;
     const row = document.createElement("div");
     row.className = "axis-row";
     row.innerHTML = `
-      <div class="axis-row-head"><span>${targetLabels[target]}</span><strong>${Math.round(axis.score * 100)}%</strong></div>
+      <div class="axis-row-head"><span>${targetLabels[target]}</span><strong>${hasResult ? `${Math.round(axis.score * 100)}%` : "—"}</strong></div>
       <div class="axis-track">
-        <span class="axis-range" style="left:${axis.low * 100}%;width:${Math.max(0, axis.high - axis.low) * 100}%"></span>
-        <span class="axis-value" style="width:${axis.score * 100}%"></span>
+        <span class="axis-range" style="left:${hasResult ? axis.low * 100 : 0}%;width:${hasResult ? Math.max(0, axis.high - axis.low) * 100 : 0}%"></span>
+        <span class="axis-value" style="width:${hasResult ? axis.score * 100 : 0}%"></span>
       </div>
       <small>${axis.n} ${itemLabel} · ${Math.round(axis.low * 100)}–${Math.round(axis.high * 100)}%</small>`;
     return row;

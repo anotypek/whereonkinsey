@@ -39,6 +39,8 @@ html[data-theme="light"] {
 }
 
 * { box-sizing: border-box; }
+img, svg { max-width: 100%; }
+button, input, select { max-width: 100%; }
 
 html { scroll-behavior: smooth; }
 
@@ -326,4 +328,76 @@ footer a { text-decoration: none; }
   .dialog-option { grid-template-columns: 34px 1fr; }
   .dialog-option em { display: none; }
   footer { gap: 16px; flex-direction: column; }
+}
+
+/* Compact layouts: preserve readable controls and prevent horizontal overflow. */
+@media (max-width: 760px) {
+  .site-header { padding: 20px 24px; gap: 14px; }
+  .header-actions { flex: 0 1 auto; gap: 8px; }
+  .language-picker select { max-width: 132px; }
+  main { padding: 0 24px; }
+  .section1 { gap: 24px; }
+  .setup-card, .question-card, .completion-card { border-radius: 16px; }
+  .assessment-topbar { align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .assessment-navigation { gap: 12px; flex-wrap: wrap; }
+  .question-meta { gap: 12px; align-items: flex-start; }
+  .question-category { max-width: 62%; overflow-wrap: anywhere; text-align: right; }
+  .answer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .answer-grid button { min-height: 56px; }
+  .analysis-loader { min-height: 440px; padding: 56px 22px; }
+  .analysis-loader h2, .completion-card h2 { font-size: clamp(31px, 8vw, 40px); }
+  .loader-steps { min-width: 0; width: 100%; }
+  .access-dialog { width: min(560px, calc(100% - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; padding: 30px 24px; }
+  .toast { width: min(360px, calc(100% - 32px)); text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .site-header, main, footer { padding-left: 16px; padding-right: 16px; }
+  .site-header { align-items: flex-start; }
+  .brand { min-width: 0; gap: 8px; font-size: 13px; }
+  .brand-mark { flex: 0 0 auto; width: 22px; height: 22px; }
+  .header-actions { gap: 6px; }
+  .language-picker select { width: 106px; padding-left: 8px; font-size: 10px; }
+  .icon-button, .theme-button { width: 30px; height: 30px; }
+  .hero-prompt { width: 100%; padding-right: 10px; border-radius: 14px; }
+  .hero-question { font-size: 12px; line-height: 1.35; }
+  h1 { font-size: clamp(42px, 13vw, 54px); }
+  .eyebrow { font-size: 10px; }
+  .confidence-visual { height: 340px; margin-top: 0; }
+  .confidence-visual img { right: -8px; height: 370px; max-width: 94%; }
+  .confidence-visual figcaption { top: auto; bottom: 48px; left: 0; max-width: 136px; transform: none; }
+  .trust-row { gap: 10px; }
+  .trust-row strong { font-size: 18px; }
+  .setup-card { padding: 25px 18px; }
+  h2 { font-size: 33px; }
+  .step-count { font-size: 43px; }
+  .disclaimer { margin-top: 18px; padding: 13px; }
+  .consent { margin: 20px 0; }
+  .question-card { padding: 32px 18px 22px; }
+  .question-number { font-size: 29px; }
+  .question-card h2 { font-size: clamp(29px, 9vw, 36px); }
+  .question-help { margin-bottom: 22px; }
+  .answer-grid { grid-template-columns: 1fr; gap: 8px; }
+  .question-footer { gap: 12px; }
+  .result-quality > div, .kinsey-results > div { min-width: 0; }
+  .kinsey-results > div { grid-template-columns: minmax(0, 1fr) auto; }
+  .kinsey-results small { grid-column: 1 / -1; }
+  .axis-group, .secondary-results { padding: 16px; }
+  .access-dialog { width: calc(100% - 16px); padding: 28px 18px 20px; border-radius: 16px; }
+  .access-dialog h2 { font-size: 31px; }
+  .dialog-option { gap: 10px; padding: 13px; }
+  .dialog-option small { line-height: 1.35; }
+  footer nav { gap: 16px; flex-wrap: wrap; }
+}
+
+@media (max-width: 360px) {
+  .site-header { padding-left: 12px; padding-right: 12px; }
+  .language-picker select { width: 90px; }
+  .brand { font-size: 12px; }
+  .theme-button { display: none; }
+  h1 { font-size: 42px; }
+  .trust-row { grid-template-columns: 1fr; }
+  .trust-row div:last-child { grid-column: auto; }
+  .card-heading { gap: 12px; }
+  .step-count { font-size: 38px; }
 }
