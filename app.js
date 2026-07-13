@@ -29,12 +29,72 @@ const questionCard = document.querySelector("#question-card");
 const analysisLoader = document.querySelector("#analysis-loader");
 const completionCard = document.querySelector("#completion-card");
 const restartAssessment = document.querySelector("#restart-assessment");
+const confidenceVisual = document.querySelector(".confidence-visual");
+const ageInput = document.querySelector("#age");
+const ageError = document.querySelector("#age-error");
 let currentQuestion = null;
 let currentSession = null;
 let analysisTimers = [];
 let otpRequested = false;
 let assessmentStorageMode = "one-time";
 let encryptionPassphrase = "";
+
+const AGE_ERROR_COPY = {
+  en: ["Enter your age.", "Enter a whole number.", "This assessment is available only to people aged 18 or older.", "Enter an age between 18 and 120."],
+  de: ["Gib dein Alter ein.", "Gib eine ganze Zahl ein.", "Diese Selbsteinschätzung ist nur für Personen ab 18 Jahren verfügbar.", "Gib ein Alter zwischen 18 und 120 Jahren ein."],
+  pl: ["Podaj swój wiek.", "Podaj liczbę całkowitą.", "Ten autotest jest dostępny wyłącznie dla osób, które mają co najmniej 18 lat.", "Podaj wiek od 18 do 120 lat."],
+  ru: ["Укажите свой возраст.", "Введите целое число.", "Этот самооценочный тест доступен только для лиц от 18 лет.", "Введите возраст от 18 до 120 лет."],
+  es: ["Indica tu edad.", "Introduce un número entero.", "Esta autoevaluación está disponible solo para personas mayores de 18 años.", "Introduce una edad entre 18 y 120 años."],
+  "zh-CN": ["请输入您的年龄。", "请输入整数。", "此自我评估仅面向年满 18 岁的人士。", "请输入 18 至 120 岁之间的年龄。"],
+  ja: ["年齢を入力してください。", "整数を入力してください。", "この自己評価は18歳以上の方のみご利用いただけます。", "18歳から120歳までの年齢を入力してください。"],
+  ko: ["나이를 입력해 주세요.", "정수를 입력해 주세요.", "이 자기 평가는 만 18세 이상만 이용할 수 있습니다.", "18세에서 120세 사이의 나이를 입력해 주세요."],
+  pt: ["Indique a sua idade.", "Introduza um número inteiro.", "Esta autoavaliação está disponível apenas para pessoas com 18 anos ou mais.", "Introduza uma idade entre 18 e 120 anos."],
+};
+
+function validateAge() {
+  const copy = AGE_ERROR_COPY[languageSelect.value] || AGE_ERROR_COPY.en;
+  const rawValue = ageInput.value.trim();
+  const age = Number(rawValue);
+  let message = "";
+
+  if (!rawValue) message = copy[0];
+  else if (!Number.isInteger(age)) message = copy[1];
+  else if (age < 18) message = copy[2];
+  else if (age > 120) message = copy[3];
+
+  ageInput.setCustomValidity(message);
+  ageInput.setAttribute("aria-invalid", String(Boolean(message)));
+  ageError.textContent = message;
+  return !message;
+}
+
+ageInput.addEventListener("input", validateAge);
+ageInput.addEventListener("blur", validateAge);
+
+if (confidenceVisual && window.matchMedia("(hover: hover) and (pointer: fine)").matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  let parallaxFrame = null;
+  let parallaxX = 0;
+  let parallaxY = 0;
+
+  const updateCharacterParallax = () => {
+    confidenceVisual.style.setProperty("--parallax-x", `${parallaxX}px`);
+    confidenceVisual.style.setProperty("--parallax-y", `${parallaxY}px`);
+    parallaxFrame = null;
+  };
+
+  confidenceVisual.addEventListener("pointermove", (event) => {
+    const bounds = confidenceVisual.getBoundingClientRect();
+    parallaxX = ((event.clientX - bounds.left) / bounds.width - 0.5) * 14;
+    parallaxY = ((event.clientY - bounds.top) / bounds.height - 0.5) * 10;
+    if (!parallaxFrame) parallaxFrame = window.requestAnimationFrame(updateCharacterParallax);
+  });
+
+  confidenceVisual.addEventListener("pointerleave", () => {
+    parallaxX = 0;
+    parallaxY = 0;
+    if (!parallaxFrame) parallaxFrame = window.requestAnimationFrame(updateCharacterParallax);
+  });
+}
 
 const SESSION_QUOTAS = {
   sexual_attraction: 8,
@@ -193,6 +253,11 @@ function updateThemeButton(theme) {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  if (!validateAge()) {
+    ageInput.focus();
+    return;
+  }
+  if (!form.reportValidity()) return;
 
   const profile = Object.fromEntries(new FormData(form).entries());
   profile.adultConsent = true;
@@ -854,6 +919,7 @@ function applyLanguage(language) {
   applyAccountCopy(language);
   applyLoaderCopy(language);
   applyCompletionCopy(language);
+  if (ageInput.getAttribute("aria-invalid") === "true") validateAge();
   if (currentQuestion) renderQuestion(currentQuestion);
   if (currentSession?.analysis && !completionCard.hidden) renderAnalysis(currentSession.analysis, language);
 }

@@ -89,6 +89,10 @@
       </div>
 
       <div class="setup-card" aria-labelledby="setup-title">
+        <svg class="form-glowline" aria-hidden="true">
+          <rect class="form-glowline-aura" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="19" pathLength="1000" />
+          <rect class="form-glowline-core" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="19" pathLength="1000" />
+        </svg>
         <div class="card-heading">
           <div>
             <p class="step-label" data-i18n="stepOne">Step 1 of 2</p>
@@ -115,9 +119,10 @@
               </select>
             </label>
 
-            <label class="field">
+            <label class="field age-field">
               <span data-i18n="age">Age</span>
-              <input name="age" type="number" min="18" max="120" step="1" inputmode="numeric" placeholder="Enter your age" data-i18n-placeholder="enterAge" />
+              <input id="age" name="age" type="number" min="18" max="120" step="1" inputmode="numeric" autocomplete="off" required aria-describedby="age-error" aria-invalid="false" placeholder="Enter your age" data-i18n-placeholder="enterAge" />
+              <small class="field-error" id="age-error" role="status" aria-live="polite"></small>
             </label>
           </div>
 
