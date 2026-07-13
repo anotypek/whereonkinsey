@@ -1,4 +1,7 @@
 const form = document.querySelector("#profile-form");
+const pageLoader = document.querySelector("#page-loader");
+const pageLoaderStatus = document.querySelector("#page-loader-status");
+const pageLoaderStartedAt = performance.now();
 const toast = document.querySelector("#toast");
 const themeToggle = document.querySelector("#theme-toggle");
 const section1 = document.querySelector("#section1");
@@ -38,6 +41,34 @@ let analysisTimers = [];
 let otpRequested = false;
 let assessmentStorageMode = "one-time";
 let encryptionPassphrase = "";
+
+async function finishPageLoading() {
+  if (!pageLoader) return;
+  if (pageLoaderStatus) pageLoaderStatus.textContent = "Loading visual assets";
+
+  const waitForImages = [...document.images].map((image) => {
+    if (image.complete) return image.decode?.().catch(() => undefined);
+    return new Promise((resolve) => {
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", resolve, { once: true });
+    });
+  });
+  const waitForWindowLoad = document.readyState === "complete"
+    ? Promise.resolve()
+    : new Promise((resolve) => window.addEventListener("load", resolve, { once: true }));
+  const waitForFonts = document.fonts?.ready || Promise.resolve();
+
+  await Promise.all([waitForWindowLoad, waitForFonts, ...waitForImages]);
+  const minimumLoaderTime = 2200;
+  const remainingTime = minimumLoaderTime - (performance.now() - pageLoaderStartedAt);
+  if (remainingTime > 0) await new Promise((resolve) => window.setTimeout(resolve, remainingTime));
+  if (pageLoaderStatus) pageLoaderStatus.textContent = "Ready";
+  window.requestAnimationFrame(() => pageLoader.classList.add("is-ready"));
+  window.setTimeout(() => pageLoader.remove(), 520);
+}
+
+if (document.readyState === "complete") finishPageLoading();
+else window.addEventListener("load", finishPageLoading, { once: true });
 
 const AGE_ERROR_COPY = {
   en: ["Enter your age.", "Enter a whole number.", "This assessment is available only to people aged 18 or older.", "Enter an age between 18 and 120."],
@@ -95,6 +126,8 @@ if (confidenceVisual && window.matchMedia("(hover: hover) and (pointer: fine)").
     if (!parallaxFrame) parallaxFrame = window.requestAnimationFrame(updateCharacterParallax);
   });
 }
+
+
 
 const SESSION_QUOTAS = {
   sexual_attraction: 8,

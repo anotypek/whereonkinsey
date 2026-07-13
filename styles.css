@@ -57,6 +57,23 @@ body {
   font-family: "DM Sans", sans-serif;
 }
 
+.page-loader { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; align-content: center; gap: 12px; color: var(--ink); background: var(--paper); opacity: 1; transition: opacity .45s ease, visibility .45s ease; }
+.page-loader.is-ready { visibility: hidden; opacity: 0; pointer-events: none; }
+.page-loader-mark { width: 22px; height: 22px; border: 2px solid var(--ink); border-radius: 50% 50% 50% 4px; transform: rotate(-45deg); animation: loader-pulse 1.3s ease-in-out infinite; }
+.page-loader strong { font-family: "Instrument Serif", serif; font-size: 29px; font-weight: 400; }
+.page-loader-line { width: 88px; height: 2px; overflow: hidden; background: var(--line); border-radius: 999px; }
+.page-loader-line::after { content: ""; display: block; width: 42%; height: 100%; background: var(--rainbow); background-size: 220% 100%; border-radius: inherit; animation: loader-sweep 1.15s ease-in-out infinite; }
+.page-loader small { color: var(--muted); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+
+@keyframes loader-pulse {
+  50% { opacity: .55; transform: rotate(-45deg) scale(.82); }
+}
+
+@keyframes loader-sweep {
+  0% { transform: translateX(-115%); }
+  100% { transform: translateX(250%); }
+}
+
 .site-header, main, footer { position: relative; z-index: 1; }
 .rainbow-wave { position: absolute; z-index: 0; top: 205px; left: -1%; width: 102%; height: 180px; pointer-events: none; opacity: .42; animation: wave-drift 19s ease-in-out infinite; }
 .rainbow-wave svg { width: 100%; height: 100%; overflow: visible; }
@@ -269,6 +286,7 @@ footer a { text-decoration: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .brand-mark, .rainbow-ribbon, h1 em, .setup-card::before, .form-glowline rect, .primary-button, .rainbow-wave, .progress-track span, .question-card::before, .analysis-orbit, .analysis-orbit::after { animation: none; }
+  .page-loader, .page-loader-mark, .page-loader-line::after { animation: none; transition: none; }
   .confidence-visual img { transform: none; transition: none; }
   .rainbow-wave animate { display: none; }
 }
