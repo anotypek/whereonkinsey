@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A private, nuanced exploration of attraction, experience, and identity." />
+    <meta name="color-scheme" content="dark light" />
+    <title>Where on Kinsey?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Where on Kinsey home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Where on Kinsey?</span>
+      </a>
+      <div class="header-actions">
+        <label class="language-picker">
+          <span class="sr-only">Change language</span>
+          <select id="language-select" aria-label="Change language">
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+            <option value="pl">Polski</option>
+            <option value="ru">Русский</option>
+            <option value="es">Español</option>
+            <option value="zh-CN">中文</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="pt">Português</option>
+          </select>
+        </label>
+        <button class="theme-button" id="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="true"><span aria-hidden="true">☀</span></button>
+        <button class="icon-button" type="button" aria-label="About this study">i</button>
+      </div>
+    </header>
+
+    <div class="rainbow-wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 180" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ef6478" />
+            <stop offset="18%" stop-color="#f49b45" />
+            <stop offset="36%" stop-color="#edc84b" />
+            <stop offset="54%" stop-color="#64b985" />
+            <stop offset="72%" stop-color="#579ed6" />
+            <stop offset="90%" stop-color="#8b6cc7" />
+            <stop offset="100%" stop-color="#ef6478" />
+            <animate attributeName="x1" values="-100%;0%;-100%" dur="10s" repeatCount="indefinite" />
+            <animate attributeName="x2" values="0%;100%;0%" dur="10s" repeatCount="indefinite" />
+          </linearGradient>
+        </defs>
+        <path class="wave-glow" d="M-40 92 C 110 10, 250 170, 400 92 S 690 12, 840 92 S 1130 172, 1280 92 S 1510 20, 1530 92">
+          <animate attributeName="d" dur="22.3s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.12;.30;.46;.59;.73;.90;1" keySplines=".42 0 .58 1;.37 0 .63 1;.42 0 .58 1;.34 0 .66 1;.42 0 .58 1;.3 0 .7 1;.42 0 .58 1" values="M-40 92 C 110 10, 250 170, 400 92 S 690 12, 840 92 S 1130 172, 1280 92 S 1510 20, 1530 92;M-40 108 C 145 54, 210 132, 392 72 S 650 158, 858 78 S 1090 18, 1270 112 S 1470 156, 1530 68;M-40 66 C 90 152, 285 28, 430 104 S 680 52, 820 122 S 1115 64, 1305 48 S 1480 118, 1530 98;M-40 92 C 140 -110, 330 290, 160 92 S 590 -80, 430 92 S 1040 260, 900 92 S 1390 -90, 1530 92;M-40 100 C 175 22, 260 146, 410 118 S 635 30, 805 62 S 1090 150, 1255 76 S 1450 34, 1530 120;M-40 90 C 250 90, 100 -130, 280 90 S 560 310, 700 90 S 920 -140, 1080 90 S 1370 250, 1530 90;M-40 74 C 120 126, 240 58, 385 86 S 710 142, 875 108 S 1080 38, 1295 102 S 1475 138, 1530 82;M-40 92 C 110 10, 250 170, 400 92 S 690 12, 840 92 S 1130 172, 1280 92 S 1510 20, 1530 92" />
+        </path>
+        <path class="wave-line" d="M-40 92 C 110 10, 250 170, 400 92 S 690 12, 840 92 S 1130 172, 1280 92 S 1510 20, 1530 92">
+          <animate attributeName="d" dur="22.3s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.12;.30;.46;.59;.73;.90;1" keySplines=".42 0 .58 1;.37 0 .63 1;.42 0 .58 1;.34 0 .66 1;.42 0 .58 1;.3 0 .7 1;.42 0 .58 1" values="M-40 92 C 110 10, 250 170, 400 92 S 690 12, 840 92 S 1130 172, 1280 92 S 1510 20, 1530 92;M-40 108 C 145 54, 210 132, 392 72 S 650 158, 858 78 S 1090 18, 1270 112 S 1470 156, 1530 68;M-40 66 C 90 152, 285 28, 430 104 S 680 52, 820 122 S 1115 64, 1305 48 S 1480 118, 1530 98;M-40 92 C 140 -110, 330 290, 160 92 S 590 -80, 430 92 S 1040 260, 900 92 S 1390 -90, 1530 92;M-40 100 C 175 22, 260 146, 410 118 S 635 30, 805 62 S 1090 150, 1255 76 S 1450 34, 1530 120;M-40 90 C 250 90, 100 -130, 280 90 S 560 310, 700 90 S 920 -140, 1080 90 S 1370 250, 1530 90;M-40 74 C 120 126, 240 58, 385 86 S 710 142, 875 108 S 1080 38, 1295 102 S 1475 138, 1530 82;M-40 92 C 110 10, 250 170, 400 92 S 690 12, 840 92 S 1130 172, 1280 92 S 1510 20, 1530 92" />
+        </path>
+      </svg>
+    </div>
+
+    <main>
+      <section class="section1" id="section1" aria-labelledby="page-title">
+      <div class="intro">
+        <div class="rainbow-ribbon" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <p class="eyebrow"><span></span><span data-i18n="privateAssessment">Private self-assessment</span></p>
+        <div class="hero-prompt">
+          <img class="pride-icon" src="flag.gif" alt="Inclusive rainbow flag" />
+          <p class="hero-question"><span data-i18n="orientationPrompt">What is your orientation?</span> <strong data-i18n="exploreNow">Explore it now!</strong></p>
+        </div>
+        <h1 id="page-title"><span data-i18n="heroBefore">Attraction is more than a</span> <em data-i18n="heroLabel">label.</em></h1>
+        <p class="lede" data-i18n="lede">Explore the patterns behind your experiences, fantasies, and connections — with nuance, privacy, and no judgement.</p>
+
+        <figure class="confidence-visual">
+          <img src="confident-rainbow.png" alt="A confident person wearing a rainbow wristband" />
+          <figcaption>
+            <span data-i18n="imageEyebrow">Come as you are</span>
+            <strong data-i18n="imageMessage">There is no wrong way to be you.</strong>
+          </figcaption>
+        </figure>
+
+        <div class="trust-row" aria-label="Assessment details">
+          <div><strong>50</strong><span data-i18n="adaptiveQuestions">adaptive questions</span></div>
+          <div><strong>~8 min</strong><span data-i18n="toComplete">to complete</span></div>
+          <div><strong data-i18n="localOnly">Local-only</strong><span data-i18n="neverTransmitted">never transmitted</span></div>
+        </div>
+      </div>
+
+      <div class="setup-card" aria-labelledby="setup-title">
+        <div class="card-heading">
+          <div>
+            <p class="step-label" data-i18n="stepOne">Step 1 of 2</p>
+            <h2 id="setup-title" data-i18n="aboutYou">A little about you</h2>
+          </div>
+          <span class="step-count">01</span>
+        </div>
+
+        <p class="card-intro" data-i18n="formIntro">This helps us phrase questions respectfully and provide a more relevant analysis. Every field is optional.</p>
+
+        <form id="profile-form">
+          <div class="form-grid">
+            <label class="field">
+              <span data-i18n="genderIdentity">Gender identity</span>
+              <select name="gender">
+                <option value="">Select an option</option>
+                <option value="woman">Woman</option>
+                <option value="man">Man</option>
+                <option value="nonbinary">Non-binary</option>
+                <option value="genderfluid">Genderfluid</option>
+                <option value="agender">Agender</option>
+                <option value="another">Another identity</option>
+                <option value="private">Prefer not to say</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span data-i18n="age">Age</span>
+              <input name="age" type="number" min="18" max="120" step="1" inputmode="numeric" placeholder="Enter your age" data-i18n-placeholder="enterAge" />
+            </label>
+          </div>
+
+          <aside class="disclaimer" aria-label="Important disclaimer">
+            <span class="disclaimer-icon" aria-hidden="true">i</span>
+            <div>
+              <strong data-i18n="preliminaryTitle">For preliminary insight only</strong>
+              <p data-i18n="preliminaryBody">This assessment is a starting point for self-reflection. It cannot define your orientation and is not a clinical diagnosis or a substitute for professional advice.</p>
+            </div>
+          </aside>
+
+          <label class="consent">
+            <input name="adultConsent" type="checkbox" required />
+            <span data-i18n="consent">I confirm that I am 18 or older and consent to answering questions about sexuality and attraction.</span>
+          </label>
+
+          <button class="primary-button" type="submit">
+            <span data-i18n="begin">Begin the assessment</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </form>
+
+        <blockquote class="affirmation form-affirmation">
+          <span aria-hidden="true">♥</span>
+          <p data-i18n="shameMessage">Your orientation is nothing to be ashamed of. Whatever you discover, it is simply one honest part of who you are.</p>
+        </blockquote>
+      </div>
+      </section>
+
+      <section class="assessment-section" id="assessment-section" aria-labelledby="assessment-title" hidden>
+        <div class="assessment-topbar">
+          <div class="assessment-navigation">
+            <button class="back-button" id="back-to-profile" type="button"><span aria-hidden="true">←</span> <span data-i18n="back">Back to profile</span></button>
+            <button class="cancel-assessment-button" id="cancel-assessment" type="button">Cancel assessment</button>
+          </div>
+          <p><span><span data-i18n="question">Question</span> <span id="current-question-count">1</span></span> <span data-i18n="of">of</span> 50</p>
+        </div>
+
+        <div class="progress-track" aria-label="Assessment progress: question 1 of 50">
+          <span id="assessment-progress" style="width: 2%"></span>
+        </div>
+
+        <div class="question-card" id="question-card">
+          <div class="question-meta">
+            <span class="question-number" id="question-number">01</span>
+            <span class="question-category">Attraction</span>
+          </div>
+          <p class="step-label" data-i18n="assessmentBegins">Your assessment begins here</p>
+          <h2 id="assessment-title">Loading your first question…</h2>
+          <p class="question-help" data-i18n="questionHelp">Choose the answer that feels most natural. There are no right or wrong responses.</p>
+
+          <div class="answer-grid" id="answer-grid" role="group" aria-label="Answer options">
+          </div>
+
+          <div class="question-footer">
+            <span data-i18n="staysDevice">Your answer stays on this device</span>
+            <button class="skip-button" id="skip-question" type="button"><span data-i18n="preferNot">Prefer not to answer</span> <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+
+        <div class="analysis-loader" id="analysis-loader" hidden aria-live="polite">
+          <div class="analysis-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+          <p class="step-label" id="loader-eyebrow">Analyzing your responses</p>
+          <h2 id="loader-title">Building your multidimensional profile…</h2>
+          <div class="loader-steps">
+            <span id="loader-step-one" class="active">Balancing attraction axes</span>
+            <span id="loader-step-two">Estimating uncertainty</span>
+            <span id="loader-step-three">Preparing your result</span>
+          </div>
+        </div>
+
+        <div class="completion-card" id="completion-card" hidden>
+          <span class="completion-symbol" aria-hidden="true">✓</span>
+          <p class="step-label" id="completion-eyebrow">Preliminary profile</p>
+          <h2 id="completion-title">Your attraction profile</h2>
+          <p id="completion-body">This result describes patterns in your answers. It does not define your identity or provide a diagnosis.</p>
+
+          <div class="result-quality">
+            <div><span id="coverage-label">Answer coverage</span><strong id="coverage-value">—</strong></div>
+            <div><span id="confidence-label">Result stability</span><strong id="confidence-value">—</strong></div>
+          </div>
+
+          <div class="kinsey-results" id="kinsey-results">
+            <div><span id="sexual-position-label">Sexual relative position</span><strong id="sexual-position">—</strong><small>0–6</small></div>
+            <div><span id="romantic-position-label">Romantic relative position</span><strong id="romantic-position">—</strong><small>0–6</small></div>
+          </div>
+
+          <div class="axis-results">
+            <section class="axis-group">
+              <h3 id="sexual-axis-title">Sexual attraction</h3>
+              <div id="sexual-axis-bars"></div>
+            </section>
+            <section class="axis-group">
+              <h3 id="romantic-axis-title">Romantic attraction</h3>
+              <div id="romantic-axis-bars"></div>
+            </section>
+          </div>
+
+          <section class="secondary-results">
+            <h3 id="detail-title">Additional dimensions</h3>
+            <div id="secondary-bars"></div>
+          </section>
+
+          <p class="result-method" id="result-method">Weighted scores prioritize attraction over fantasy and behavior. The shaded range reflects response variability and limited item coverage.</p>
+          <button class="primary-button" id="restart-assessment" type="button"><span id="restart-label">Start a new assessment</span><span aria-hidden="true">↻</span></button>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="access-dialog" id="access-dialog" aria-labelledby="access-dialog-title">
+      <button class="dialog-close" id="close-access-dialog" type="button" aria-label="Close">×</button>
+      <p class="step-label" data-i18n="lastChoice">One last choice</p>
+      <h2 id="access-dialog-title" data-i18n="continueHow">How would you like to continue?</h2>
+      <p class="dialog-intro" data-i18n="dialogIntro">Choose a private one-time session or use an account to return to your results later.</p>
+
+      <div class="dialog-options">
+        <button class="dialog-option recommended" id="continue-one-time" type="button">
+          <span class="dialog-option-icon" aria-hidden="true">→</span>
+          <span><strong data-i18n="oneTime">One-time assessment</strong><small data-i18n="oneTimeBody">No account. Results stay on this device.</small></span>
+          <em data-i18n="recommended">Recommended</em>
+        </button>
+        <button class="dialog-option" id="continue-account" type="button">
+          <span class="dialog-option-icon" aria-hidden="true">◇</span>
+          <span><strong data-i18n="account">Create account or sign in</strong><small data-i18n="accountBody">Return to your results on another device.</small></span>
+          <em data-i18n="nextStage">Next stage</em>
+        </button>
+      </div>
+
+      <form class="account-panel" id="account-panel" hidden>
+        <button class="account-back" id="account-back" type="button">← <span>Back</span></button>
+        <label><span id="account-email-label">Email</span><input id="account-email" type="email" autocomplete="email" required /></label>
+        <label><span id="passphrase-label">Private encryption passphrase</span><input id="encryption-passphrase" type="password" minlength="12" autocomplete="off" required /></label>
+        <label id="otp-code-field" hidden><span id="otp-code-label">Verification code</span><input id="otp-code" type="text" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="8" pattern="[0-9]{6,8}" /></label>
+        <p class="encryption-note" id="encryption-note">This passphrase encrypts your results on this device and is never sent to Supabase. If you lose it, your encrypted results cannot be recovered.</p>
+        <p class="account-status" id="account-status" role="status" aria-live="polite"></p>
+        <button class="primary-button" id="account-submit" type="submit"><span>Send verification code</span><span aria-hidden="true">→</span></button>
+        <div class="otp-help" id="otp-help" hidden>
+          <span id="otp-help-text">Didn't receive the code?</span>
+          <button id="resend-otp" type="button">Send it again</button>
+        </div>
+      </form>
+    </dialog>
+
+    <footer>
+      <p data-i18n="footerDisclaimer">Preliminary self-assessment only — not a clinical or diagnostic tool.</p>
+      <nav aria-label="Footer"><a href="#" data-i18n="privacy">Privacy</a><a href="#" data-i18n="methodology">Methodology</a><a href="#" data-i18n="about">About</a></nav>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">Profile saved. The question module is ready for the next stage.</div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="supabase-client.js"></script>
+    <script src="locales.js"></script>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
